@@ -57,6 +57,9 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
 
     @Option(help: "Schemes to analyze")
     var schemes: String
+    
+    @Option(help: "Paths to index store")
+    var indexStore: String? = nil
 
     public func run() async throws {
         let configuration = Configuration()
@@ -66,8 +69,13 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
         }
 
         let project = try Project(configuration: configuration)
-        let driver = try project.driver()
-        try driver.build()
+
+        if let indexStore {
+            configuration.indexStorePath = [.makeAbsolute(indexStore)]
+        } else {
+            let driver = try project.driver()
+            try driver.build()
+        }
         let graph = SourceGraph(configuration: configuration)
         
         _ = try Scan(
