@@ -1,4 +1,5 @@
 import ArgumentParser
+import System
 import ProjectDrivers
 import Foundation
 import Configuration
@@ -22,6 +23,9 @@ public struct UseGraphPeripheryAnalyzeCommand: AsyncParsableCommand {
 
     @Option(help: "Paths to folder with sources - \"path1,path2,path3\"")
     var folderPaths: String
+    
+    @Option(help: "Paths to index store")
+    var indexStore: String? = nil
 
     @Option(help: "Schemes to analyze")
     var schemes: String
@@ -43,10 +47,15 @@ public struct UseGraphPeripheryAnalyzeCommand: AsyncParsableCommand {
             configuration.project = .init(projectURL.absoluteString)
             configuration.schemes = schemes.components(separatedBy: ",")
         }
-        
         let project = try Project(configuration: configuration)
-        let driver = try project.driver()
-        try driver.build()
+
+        if let indexStore {
+            configuration.indexStorePath = [.makeAbsolute(indexStore)]
+        } else {
+            let driver = try project.driver()
+            try driver.build()
+        }
+        
         let graph = SourceGraph(configuration: configuration)
         
         let _ = try Scan(
