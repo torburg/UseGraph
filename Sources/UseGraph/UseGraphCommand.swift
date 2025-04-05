@@ -11,6 +11,7 @@ public struct UseGraphCommand: AsyncParsableCommand {
         version: "0.0.1",
         subcommands: [
             UseGraphFrontendCommand.self,
-        ]
+        ],
+        defaultSubcommand: UseGraphFrontendCommand.self
     )
 }

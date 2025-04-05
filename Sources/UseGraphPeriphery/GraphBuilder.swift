@@ -7,6 +7,7 @@ enum OutputFormat {
     case svg
     case png
     case gv
+    case csv
     
     public static func parse(format: String) throws -> OutputFormat {
         switch format.lowercased() {
@@ -16,6 +17,8 @@ enum OutputFormat {
                 .png
         case "gv":
                 .gv
+        case "csv":
+                .csv
         default:
             throw FormatError.formatIsNotCorrect
         }
@@ -48,8 +51,6 @@ final class GraphBuilder {
         
         guard let edgesData = edgesCSV.data(using: .utf8),
               let nodesData = nodesCSV.data(using: .utf8) else { fatalError() }
-        print(FileManager.default.createFile(atPath: edgesUrl.path(), contents: edgesData))
-        print(FileManager.default.createFile(atPath: nodesUrl.path(), contents: nodesData))
     }
     
     func buildGraph(edges: [Edge], format: OutputFormat) async throws {
@@ -60,10 +61,11 @@ final class GraphBuilder {
             let url = URL(fileURLWithPath: #file).deletingLastPathComponent().appending(path: "Graph.\(format.rawValue)")
             guard let fileContents = String(data: data, encoding: .utf8) else { fatalError() }
             
-            print(FileManager.default.createFile(atPath: url.path(), contents: fileContents.data(using: .utf8)))
             Task {
                 System.shared.run("open \(url.path())")
             }
+        case .csv:
+            csvBuildGraph(edges: edges)
         }
     }
     
@@ -92,6 +94,8 @@ extension GraphBuilder {
                 .png
         case .gv:
                 .gv
+        case .csv:
+            nil
         }
     }
 }
