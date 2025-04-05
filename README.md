@@ -1,7 +1,6 @@
 UseGraph
 =====================
-<img src="https://storage.yandexcloud.net/swift-ui-course/MonolithDestroyer.png" width="256"/>
-![alt text](https://storage.yandexcloud.net/swift-ui-course/MonolithDestroyer.png)
+<img src="https://storage.yandexcloud.net/swift-ui-course/MonolithDestroyer.png" width="300"/>
 
 
 ## How To Use
