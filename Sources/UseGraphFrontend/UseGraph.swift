@@ -11,8 +11,6 @@ public struct UseGraphFrontendCommand: AsyncParsableCommand {
         abstract: "Swift CLI to work with Use Graph tool",
         version: "0.0.1",
         subcommands: [
-            UseGraphBuildCommand.self,
-            UseGraphAnalyzeCommand.self,
             UseGraphPeripheryAnalyzeCommand.self,
             UseGraphPeripheryBuildCommand.self
         ]

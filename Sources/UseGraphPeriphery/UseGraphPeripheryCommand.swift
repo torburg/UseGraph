@@ -13,16 +13,16 @@ public struct UseGraphPeripheryAnalyzeCommand: AsyncParsableCommand {
     public init() {}
 
     public static let configuration = CommandConfiguration(
-        commandName: "usage_graph_dynamic_analyze",
+        commandName: "monolith_destroyer",
         abstract: "Command to build graph of usage.",
         version: "0.0.1"
     )
 
     @Option(help: "Path to project (.xcodeproj)")
     var projectPath: String? = nil
-
-    @Option(help: "Paths to folder with sources - \"path1,path2,path3\"")
-    var folderPaths: String
+    
+    @Option(help: "Paths to your monolith")
+    var monolithPath: String
     
     @Option(help: "Paths to index store")
     var indexStore: String? = nil
@@ -32,10 +32,8 @@ public struct UseGraphPeripheryAnalyzeCommand: AsyncParsableCommand {
 
     public func run() async throws {
         var projectURL: URL?
-        let folderURLs: [String] = try folderPaths.split(separator: ",").map {
-            guard let folderURL = URL(string: String($0)) else { throw PathError.pathIsNotCorrect }
-            return folderURL.path()
-        }
+    
+        let folderURLs: [String] = findSubdirectories(atPath: monolithPath)
 
         if let projectPath {
             projectURL = URL(string: projectPath)
@@ -135,6 +133,27 @@ public struct UseGraphPeripheryAnalyzeCommand: AsyncParsableCommand {
 
             print(folderPath + " - " + String(edgesInFolder.count))
         }
+    }
+    
+    
+    func findSubdirectories(atPath path: String) -> [String] {
+        let fileManager = FileManager.default
+        var subdirectories: [String] = []
+
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: path)
+            for item in contents {
+                let fullPath = (path as NSString).appendingPathComponent(item)
+                var isDirectory: ObjCBool = false
+                if fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory), isDirectory.boolValue {
+                    subdirectories.append(fullPath)
+                }
+            }
+        } catch {
+            print("Error while reading the document: \(error)")
+        }
+
+        return subdirectories
     }
 }
 

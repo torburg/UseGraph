@@ -47,7 +47,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
     public init() {}
 
     public static let configuration = CommandConfiguration(
-        commandName: "usage_graph_dynamic",
+        commandName: "usage_graph",
         abstract: "Command to build graph of usage.",
         version: "0.0.1"
     )
@@ -60,6 +60,9 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
     
     @Option(help: "Paths to index store")
     var indexStore: String? = nil
+    
+    @Option(help: "Output file format. Now available: CSV, SVG, PNG, GV")
+    var format: String = "csv"
 
     public func run() async throws {
         let configuration = Configuration()
@@ -114,7 +117,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
         let edges = edgeDict.compactMap {
             Edge(from: $0.key.from, to: $0.key.to, references: $0.value)
         }
-        GraphBuilder.shared.csvBuildGraph(edges: edges)
+        try await GraphBuilder.shared.buildGraph(edges: edges, format: OutputFormat.parse(format: format))
     }
 }
 

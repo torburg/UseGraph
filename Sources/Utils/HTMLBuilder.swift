@@ -21,7 +21,22 @@ public final class HTMLGenerator {
             <meta charset="UTF-8">
             <style>
                 svg {
-                  border: 1px solid blue;
+                }
+                .svg-container {
+                    resize: horizontal;
+                    overflow: hidden;
+                    width: auto;
+                    height: auto;
+                }
+                .overlay-image {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 150px;
+                    height: 150px;
+                    z-index: 9999;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                    border-radius: 10px;
                 }
             </style>
         </head>
@@ -46,21 +61,17 @@ public final class HTMLGenerator {
 
         htmlString += """
             </table>
-            <div style={{
-                backgroundColor: 'lightpink',
-                resize: 'horizontal',
-                overflow: 'hidden',
-                width: '1000px',
-                height: 'auto',
-              }}>
+            <div class="svg-container">
                 <svg viewBox="0 0 3000 3000">
                     \(svgString)
                 </svg>
             </div>
+            <img class="overlay-image" src="https://storage.yandexcloud.net/swift-ui-course/MonolithDestroyer.png" alt="Overlay Image">
         </body>
         </html>
         """
 
         return htmlString
     }
+
 }
