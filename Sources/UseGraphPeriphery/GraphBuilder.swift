@@ -46,11 +46,14 @@ final class GraphBuilder {
         let edgesCSV = csvBuilder.createCSV(from: edges)
         let nodesCSV = csvBuilder.createCSV(from: Array(uniqueSet))
         
-        let nodesUrl = URL(fileURLWithPath: #file).deletingLastPathComponent().appending(path: "Nodes.csv")
-        let edgesUrl = URL(fileURLWithPath: #file).deletingLastPathComponent().appending(path: "Edges.csv")
+
+        let nodesUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Nodes.csv")
+        let edgesUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Edges.csv")
         
         guard let edgesData = edgesCSV.data(using: .utf8),
               let nodesData = nodesCSV.data(using: .utf8) else { fatalError() }
+        FileManager.default.createFile(atPath: edgesUrl.path(), contents: edgesData)
+        FileManager.default.createFile(atPath: nodesUrl.path(), contents: nodesData)
     }
     
     func buildGraph(edges: [Edge], format: OutputFormat) async throws {
@@ -58,7 +61,7 @@ final class GraphBuilder {
         case .svg, .png, .gv:
             guard let format = mapFormat(format: format) else { fatalError() }
             let data = try await buildGraphData(edges: edges, format: format)
-            let url = URL(fileURLWithPath: #file).deletingLastPathComponent().appending(path: "Graph.\(format.rawValue)")
+            let url = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Graph.\(format.rawValue)")
             guard let fileContents = String(data: data, encoding: .utf8) else { fatalError() }
             
             Task {
