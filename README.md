@@ -1,5 +1,7 @@
 UseGraph
 =====================
+![alt text](https://storage.yandexcloud.net/swift-ui-course/MonolithDestroyer.png)
+
 
 ## How To Use
 
