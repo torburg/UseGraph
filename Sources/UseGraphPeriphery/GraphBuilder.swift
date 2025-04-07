@@ -62,11 +62,8 @@ final class GraphBuilder {
             guard let format = mapFormat(format: format) else { fatalError() }
             let data = try await buildGraphData(edges: edges, format: format)
             let url = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Graph.\(format.rawValue)")
-            guard let fileContents = String(data: data, encoding: .utf8) else { fatalError() }
-            
-            Task {
-                System.shared.run("open \(url.path())")
-            }
+            FileManager.default.createFile(atPath: url.path(), contents: data)
+            System.shared.run("open \(url.path())")
         case .csv:
             csvBuildGraph(edges: edges)
         }
