@@ -94,6 +94,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
                 if let declaration = graph.allExplicitDeclarationsByUsr[$0.usr],
                    declaration.parent != $0.parent
                 {
+                    
                     guard let entity = $0.parent?.findEntity(),
                           entity != declaration.findEntity(),
                           let entityParent = entity.presentAsNode(),
@@ -113,7 +114,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
                     )
                 }
             }
-
+        
         let edges = edgeDict.compactMap {
             Edge(from: $0.key.from, to: $0.key.to, references: $0.value)
         }
@@ -144,8 +145,12 @@ extension Declaration {
     func presentAsNode() -> Node? {
         let entity = findEntity()
         guard let entity else { return nil }
+
+        // Безопасное извлечение модуля
+        let moduleName = entity.location.file.modules.first ?? "UnknownModule"
+
         return Node(
-            moduleName: entity.location.file.modules.first!,
+            moduleName: moduleName,
             fileName: entity.location.file.path.string,
             line: String(entity.location.line),
             entityName: entity.name,

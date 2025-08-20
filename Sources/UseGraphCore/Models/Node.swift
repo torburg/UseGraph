@@ -2,35 +2,28 @@ import Utils
 
 public struct Node: Hashable, CSVRepresentable {
     public var csvRepresentation: String {
-      var fields = [id, moduleName, fileName]
-      if let line {
-        fields.append(line)
-      }
-      if let entityName {
-        fields.append(entityName)
-      }
-      if let entityType {
-        fields.append(entityType)
-      }
+      let fields = [
+        id,
+        moduleName,
+        fileName,
+        line ?? "",
+        entityName ?? "",
+        entityType ?? ""
+      ]
       return fields.joined(separator: ",")
     }
 
     public var fields: [String] {
-      var fields = ["id", "moduleName", "fileName"]
-      if line != nil {
-        fields.append("line")
-      }
-      if entityName != nil {
-        fields.append("entityName")
-      }
-      if entityType != nil {
-        fields.append("entityType")
-      }
-      return fields
+      return ["id", "moduleName", "fileName", "line", "entityName", "entityType"]
     }
 
     public var id: String {
-      moduleName + "." + (containerName ?? "") + (entityName ?? "") + "." + (entityType ?? "") + "." + usrs.joined(separator: ",")
+        let baseId = moduleName + "." + (containerName ?? "") + (entityName ?? "") + "." + (entityType ?? "") + "." + usrs.joined(separator: ".")
+        let locationId = fileName + ":" + (line ?? "-1")
+        if fileName == "/Users/rofle100lvl/arcadia/mobile/travel/ios/Targets/UITestsHelper/Impl/Constants.swift" {
+            print(baseId + "@" + locationId)
+        }
+        return baseId + "@" + locationId
     }
 
     public let moduleName: String
