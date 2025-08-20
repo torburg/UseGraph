@@ -79,7 +79,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
             let driver = try project.driver()
             try driver.build()
         }
-        let graph = SourceGraph(configuration: configuration)
+        let graph = SourceGraph(configuration: configuration, logger: .init())
         
         _ = try Scan(
             configuration: configuration,
@@ -91,7 +91,7 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
 
         graph.allReferences
             .forEach {
-                if let declaration = graph.allExplicitDeclarationsByUsr[$0.usr],
+                if let declaration = graph.allDeclarationsByUsr[$0.usr],
                    declaration.parent != $0.parent
                 {
                     
