@@ -20,9 +20,6 @@ public struct Node: Hashable, CSVRepresentable {
     public var id: String {
         let baseId = moduleName + "." + (containerName ?? "") + (entityName ?? "") + "." + (entityType ?? "") + "." + usrs.joined(separator: ".")
         let locationId = fileName + ":" + (line ?? "-1")
-        if fileName == "/Users/rofle100lvl/arcadia/mobile/travel/ios/Targets/UITestsHelper/Impl/Constants.swift" {
-            print(baseId + "@" + locationId)
-        }
         return baseId + "@" + locationId
     }
 
