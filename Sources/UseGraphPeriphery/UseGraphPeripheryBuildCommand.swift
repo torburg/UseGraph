@@ -99,10 +99,21 @@ public struct UseGraphPeripheryBuildCommand: AsyncParsableCommand {
                           entity != declaration.findEntity(),
                           let entityParent = entity.presentAsNode(),
                           let declarationParent = declaration.presentAsNode() else { return }
-                    let edge = EdgeWithoutReference(
-                        from: entityParent,
-                        to: declarationParent
-                    )
+
+                    let edge: EdgeWithoutReference
+
+                    if entity.kind == .protocol && declaration.kind == .functionMethodInstance {
+                        edge = EdgeWithoutReference(
+                            from: declarationParent,
+                            to: entityParent
+                        )
+                    } else {
+                        edge = EdgeWithoutReference(
+                            from: entityParent,
+                            to: declarationParent
+                        )
+                    }
+
                     if !edgeDict.keys.contains(edge) {
                         edgeDict[edge] = []
                     }
