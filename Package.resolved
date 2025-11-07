@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tadija/AEXML.git",
       "state" : {
-        "revision" : "38f7d00b23ecd891e1ee656fa6aeebd6ba04ecc3",
-        "version" : "4.6.1"
+        "revision" : "db806756c989760b35108146381535aec231092b",
+        "version" : "4.7.0"
       }
     },
     {
@@ -30,10 +30,10 @@
     {
       "identity" : "periphery",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/rofle100lvl/periphery.git",
+      "location" : "https://github.com/rofle100lvl/periphery/",
       "state" : {
-        "branch" : "SourceGraphPublic",
-        "revision" : "86d697922aae5b6a71bd285cfc4199b56cf4b88d"
+        "branch" : "PublicPackageAccess",
+        "revision" : "a7177fb08e10c68cfd3432e59808adb18ec08ba9"
       }
     },
     {
@@ -59,17 +59,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ileitch/swift-filename-matcher",
       "state" : {
-        "revision" : "17eaeaf60f2703e3ef826de94149c88a78953fd3",
-        "version" : "0.1.1"
+        "revision" : "eef5ac0b6b3cdc64b3039b037bed2def8a1edaeb",
+        "version" : "2.0.1"
       }
     },
     {
       "identity" : "swift-indexstore",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ileitch/swift-indexstore",
+      "location" : "https://github.com/kateinoigakukun/swift-indexstore",
       "state" : {
-        "revision" : "e0046a1704e2e7af88355883247ee1f9d47ed9ee",
-        "version" : "9.0.4"
+        "revision" : "055264ececff53c1265c2b7ee3513053b02604de",
+        "version" : "0.4.0"
       }
     },
     {
@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax",
       "state" : {
-        "revision" : "303e5c5c36d6a558407d364878df131c3546fad8",
-        "version" : "510.0.2"
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
       }
     },
     {
@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tuist/xcodeproj",
       "state" : {
-        "revision" : "20d5803c70e4ac5d67151ea6f5624a8136ab8fe0",
-        "version" : "8.21.0"
+        "revision" : "a0cbb0174e71dba41c1bb572e8cd1fb6138daa03",
+        "version" : "9.6.0"
       }
     },
     {
