@@ -8,6 +8,7 @@ enum OutputFormat {
     case png
     case gv
     case csv
+    case json
     
     public static func parse(format: String) throws -> OutputFormat {
         switch format.lowercased() {
@@ -19,6 +20,8 @@ enum OutputFormat {
                 .gv
         case "csv":
                 .csv
+        case "json":
+                .json
         default:
             throw FormatError.formatIsNotCorrect
         }
@@ -28,25 +31,35 @@ enum OutputFormat {
 final class GraphBuilder {
     static let shared = GraphBuilder()
     let csvBuilder: CSVBuilding
+    let jsonBuilder: JSONBuilding
     let outputGraphBuilder: OutputGraphBuilding
     
     private init(
         csvBuilder: CSVBuilding = CSVBuilder(),
+        jsonBuilder: JSONBuilding = JSONBuilder(),
         outputGraphBuilder: OutputGraphBuilding = OutputGraphBuilder()
     ) {
         self.csvBuilder = csvBuilder
+        self.jsonBuilder = jsonBuilder
         self.outputGraphBuilder = outputGraphBuilder
     }
     
-    func csvBuildGraph(edges: [UseGraphPeriphery.Edge]) {
+    private func prepareGraphData(from edges: [UseGraphPeriphery.Edge]) -> (nodes: [UseGraphCore.Node], coreEdges: [UseGraphCore.Edge]) {
         var uniqueSet = Set<UseGraphCore.Node>()
         edges.map { [$0.from, $0.to] }.flatMap { $0 }.forEach { uniqueSet.insert($0) }
         
-        let edges = edges.map { UseGraphCore.Edge(source: $0.from.id, target: $0.to.id) }
-        let edgesCSV = csvBuilder.createCSV(from: edges)
-        let nodesCSV = csvBuilder.createCSV(from: Array(uniqueSet))
+        let nodes = Array(uniqueSet)
+        let coreEdges = edges.map { UseGraphCore.Edge(source: $0.from.id, target: $0.to.id) }
         
-
+        return (nodes, coreEdges)
+    }
+    
+    func csvBuildGraph(edges: [UseGraphPeriphery.Edge]) {
+        let (nodes, coreEdges) = prepareGraphData(from: edges)
+        
+        let edgesCSV = csvBuilder.createCSV(from: coreEdges)
+        let nodesCSV = csvBuilder.createCSV(from: nodes)
+        
         let nodesUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Nodes.csv")
         let edgesUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Edges.csv")
         
@@ -54,6 +67,29 @@ final class GraphBuilder {
               let nodesData = nodesCSV.data(using: .utf8) else { fatalError() }
         FileManager.default.createFile(atPath: edgesUrl.path(), contents: edgesData)
         FileManager.default.createFile(atPath: nodesUrl.path(), contents: nodesData)
+    }
+    
+    func jsonBuildGraph(edges: [UseGraphPeriphery.Edge]) throws {
+        let (nodes, _) = prepareGraphData(from: edges)
+        
+        let edgesJSON = edges.map { edge in
+            [
+                "source": edge.from.id,
+                "target": edge.to.id,
+                "type": "directed",
+                "references": edge.references.map { ref in
+                    [
+                        "file": ref.file,
+                        "line": ref.line
+                    ]
+                }
+            ]
+        }
+        
+        let jsonData = try jsonBuilder.createJSON(nodes: nodes, edges: edgesJSON)
+        
+        let jsonUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: "Graph.json")
+        FileManager.default.createFile(atPath: jsonUrl.path(), contents: jsonData)
     }
     
     func buildGraph(edges: [Edge], format: OutputFormat) async throws {
@@ -66,6 +102,8 @@ final class GraphBuilder {
             System.shared.run("open \(url.path())")
         case .csv:
             csvBuildGraph(edges: edges)
+        case .json:
+            try jsonBuildGraph(edges: edges)
         }
     }
     
@@ -94,6 +132,8 @@ extension GraphBuilder {
                 .png
         case .gv:
                 .gv
+        case .json:
+                .json
         case .csv:
             nil
         }
